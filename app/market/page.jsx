@@ -1,11 +1,12 @@
 'use client';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import ReactECharts from 'echarts-for-react';
 import zhifubaoImg from '../assets/zhifubao.png';
 import weixinImg from '../assets/weixin.png';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 function DonateModal({ onClose }) {
   const [method, setMethod] = useState('alipay'); // alipay, wechat
@@ -223,10 +224,23 @@ const formatNumber = (num) => {
   return n.toFixed(0);
 };
 
-export default function MarketPage() {
+function MarketContent() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  // Get active code from URL or default to SH
+  const activeCodeParam = searchParams.get('code');
+  const activeNameParam = searchParams.get('name');
+  
   const [indicesData, setIndicesData] = useState([]);
-  const [activeCode, setActiveCode] = useState('sh000001'); // Default to SH Index (without prefix s_)
-  const [activeName, setActiveName] = useState('上证指数');
+  // If URL has code, use it, otherwise default
+  const [activeCode, setActiveCode] = useState(activeCodeParam || 'sh000001'); 
+  const [activeName, setActiveName] = useState(activeNameParam || '上证指数');
+  
+  // Sync state when URL changes
+  useEffect(() => {
+    if (activeCodeParam) setActiveCode(activeCodeParam);
+    if (activeNameParam) setActiveName(activeNameParam);
+  }, [activeCodeParam, activeNameParam]);
   
   // Chart related state
   const [chartData, setChartData] = useState(null);
@@ -583,35 +597,40 @@ export default function MarketPage() {
         const isActive = activeCode === marketCode;
         
         return (
-          <Link
+          <div
             key={item.code}
-            href={`/market/detail?code=${item.code}&name=${encodeURIComponent(item.name)}`}
+            onClick={() => {
+              // Update URL without full page reload
+              router.push(`/market?code=${item.code}&name=${encodeURIComponent(item.name)}`, { scroll: false });
+              setActiveCode(marketCode);
+              setActiveName(item.name);
+            }}
             style={{ textDecoration: 'none', color: 'inherit' }}
           >
-            <div 
-              className={`glass ${isActive ? 'active-card' : ''}`}
-              style={{ 
-                padding: '16px 12px', 
-                display: 'flex', 
-                flexDirection: 'column', 
-                alignItems: 'center', 
-                justifyContent: 'center',
-                cursor: 'pointer',
-                minHeight: '100px',
-                border: isActive ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)',
-                transition: 'all 0.2s ease'
-              }}
-            >
-              <div className="muted" style={{ fontSize: '12px', marginBottom: '4px' }}>{item.name}</div>
-              <div style={{ fontSize: '18px', fontWeight: 'bold', color, marginBottom: '4px' }}>
-                {item.price}
-              </div>
-              <div style={{ fontSize: '12px', display: 'flex', gap: '8px', color }}>
-                <span>{isUp ? '+' : ''}{item.change}</span>
-                <span>{isUp ? '+' : ''}{item.changePercent}%</span>
+              <div 
+                className={`glass ${isActive ? 'active-card' : ''}`}
+                style={{ 
+                  padding: '16px 12px', 
+                  display: 'flex', 
+                  flexDirection: 'column', 
+                  alignItems: 'center', 
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  minHeight: '100px',
+                  border: isActive ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)',
+                  transition: 'all 0.2s ease'
+                }}
+              >
+                <div className="muted" style={{ fontSize: '12px', marginBottom: '4px' }}>{item.name}</div>
+                <div style={{ fontSize: '18px', fontWeight: 'bold', color, marginBottom: '4px' }}>
+                  {item.price}
+                </div>
+                <div style={{ fontSize: '12px', display: 'flex', gap: '8px', color }}>
+                  <span>{isUp ? '+' : ''}{item.change}</span>
+                  <span>{isUp ? '+' : ''}{item.changePercent}%</span>
+                </div>
               </div>
             </div>
-          </Link>
         );
       })}
       </div>
@@ -701,5 +720,17 @@ export default function MarketPage() {
         {donateOpen && <DonateModal onClose={() => setDonateOpen(false)} />}
       </AnimatePresence>
     </div>
+  );
+}
+
+export default function MarketPage() {
+  return (
+    <Suspense fallback={
+      <div className="container content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div className="loading-bar" style={{ width: '100px' }}></div>
+      </div>
+    }>
+      <MarketContent />
+    </Suspense>
   );
 }
