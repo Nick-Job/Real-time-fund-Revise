@@ -65,6 +65,10 @@ const formatNumber = (num) => {
   return n.toFixed(0);
 };
 
+export function generateStaticParams() {
+  return [];
+}
+
 export default function MarketPage({ params }) {
   const { code } = params;
   const searchParams = useSearchParams();
