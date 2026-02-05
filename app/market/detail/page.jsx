@@ -65,13 +65,9 @@ const formatNumber = (num) => {
   return n.toFixed(0);
 };
 
-export function generateStaticParams() {
-  return [];
-}
-
-export default function MarketPage({ params }) {
-  const { code } = params;
+export default function DetailPage() {
   const searchParams = useSearchParams();
+  const code = searchParams.get('code');
   const name = searchParams.get('name') || code;
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -80,6 +76,8 @@ export default function MarketPage({ params }) {
 
   // Fetch Real-time Stats
   useEffect(() => {
+    if (!code) return;
+
     const fetchStats = () => {
       const isUS = code.startsWith('us');
       const script = document.createElement('script');
@@ -152,6 +150,7 @@ export default function MarketPage({ params }) {
 
   // Fetch Chart Data
   useEffect(() => {
+    if (!code) return;
     setLoading(true);
     const fetchData = async () => {
       try {
@@ -287,6 +286,14 @@ export default function MarketPage({ params }) {
         ]
       };
   };
+
+  if (!code) {
+    return (
+      <div className="container content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div className="muted">Invalid Code</div>
+      </div>
+    );
+  }
 
   return (
     <div className="container content">

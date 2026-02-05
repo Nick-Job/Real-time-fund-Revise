@@ -5,6 +5,7 @@ import ReactECharts from 'echarts-for-react';
 import zhifubaoImg from '../assets/zhifubao.png';
 import weixinImg from '../assets/weixin.png';
 import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
 
 function DonateModal({ onClose }) {
   const [method, setMethod] = useState('alipay'); // alipay, wechat
@@ -582,37 +583,35 @@ export default function MarketPage() {
         const isActive = activeCode === marketCode;
         
         return (
-          <div 
-            key={item.code} 
-            className={`glass ${isActive ? 'active-card' : ''}`}
-            onClick={() => {
-               setActiveCode(marketCode);
-               setActiveName(item.name);
-               // Reset tab if switching from US (no min chart) to A-share, or vice versa if needed
-               // But usually keeping 'day' is safe.
-               if (marketCode.startsWith('us') && tab === 'min') setTab('day');
-            }}
-            style={{ 
-              padding: '16px 12px', 
-              display: 'flex', 
-              flexDirection: 'column', 
-              alignItems: 'center', 
-              justifyContent: 'center',
-              cursor: 'pointer',
-              minHeight: '100px',
-              border: isActive ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)',
-              transition: 'all 0.2s ease'
-            }}
+          <Link
+            key={item.code}
+            href={`/market/detail?code=${item.code}&name=${encodeURIComponent(item.name)}`}
+            style={{ textDecoration: 'none', color: 'inherit' }}
           >
-            <div className="muted" style={{ fontSize: '12px', marginBottom: '4px' }}>{item.name}</div>
-            <div style={{ fontSize: '18px', fontWeight: 'bold', color, marginBottom: '4px' }}>
-              {item.price}
+            <div 
+              className={`glass ${isActive ? 'active-card' : ''}`}
+              style={{ 
+                padding: '16px 12px', 
+                display: 'flex', 
+                flexDirection: 'column', 
+                alignItems: 'center', 
+                justifyContent: 'center',
+                cursor: 'pointer',
+                minHeight: '100px',
+                border: isActive ? '2px solid var(--primary)' : '1px solid rgba(255,255,255,0.1)',
+                transition: 'all 0.2s ease'
+              }}
+            >
+              <div className="muted" style={{ fontSize: '12px', marginBottom: '4px' }}>{item.name}</div>
+              <div style={{ fontSize: '18px', fontWeight: 'bold', color, marginBottom: '4px' }}>
+                {item.price}
+              </div>
+              <div style={{ fontSize: '12px', display: 'flex', gap: '8px', color }}>
+                <span>{isUp ? '+' : ''}{item.change}</span>
+                <span>{isUp ? '+' : ''}{item.changePercent}%</span>
+              </div>
             </div>
-            <div style={{ fontSize: '12px', display: 'flex', gap: '8px', color }}>
-              <span>{isUp ? '+' : ''}{item.change}</span>
-              <span>{isUp ? '+' : ''}{item.changePercent}%</span>
-            </div>
-          </div>
+          </Link>
         );
       })}
       </div>
