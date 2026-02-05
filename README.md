@@ -4,7 +4,7 @@
 
 **衍生版本说明**：本项目是基于 [hzm0321/real-time-fund](https://github.com/hzm0321/real-time-fund) 的开源项目进行修改和功能增强的版本。所有原始功能保持不变，新增功能旨在提供更完整的基金投资管理体验。原项目采用 AGPL-3.0 开源协议，本衍生版本同样遵循该协议。
 
-预览地址：[https://hzm0321.github.io/real-time-fund/](https://hzm0321.github.io/real-time-fund/)（原版预览，本增强版需自行部署）
+预览地址：[[https://hzm0321.github.io/real-time-fund/](https://nick-job.github.io/Real-time-fund-Revise/)]
 
 ## ✨ 特性
 
