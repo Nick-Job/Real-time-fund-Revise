@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, Suspense } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
@@ -65,7 +65,7 @@ const formatNumber = (num) => {
   return n.toFixed(0);
 };
 
-export default function DetailPage() {
+function DetailContent() {
   const searchParams = useSearchParams();
   const code = searchParams.get('code');
   const name = searchParams.get('name') || code;
@@ -337,5 +337,17 @@ export default function DetailPage() {
           </div>
       </div>
     </div>
+  );
+}
+
+export default function DetailPage() {
+  return (
+    <Suspense fallback={
+      <div className="container content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div className="loading-bar" style={{ width: '100px' }}></div>
+      </div>
+    }>
+      <DetailContent />
+    </Suspense>
   );
 }
