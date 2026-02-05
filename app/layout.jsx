@@ -14,8 +14,9 @@ export default function RootLayout({ children }) {
     <html lang="zh-CN">
       <head>
         <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-screen-webfont@1.1.0/style.css" />
       </head>
-      <body>
+      <body style={{ fontFamily: '"LXGW WenKai Screen", sans-serif' }}>
         <AnalyticsGate GA_ID={GA_ID} />
         {children}
       </body>
