@@ -8,6 +8,7 @@
 基金页面 ：[https://nick-job.github.io/Real-time-fund-Revise/](https://nick-job.github.io/Real-time-fund-Revise/)
 行情页面：[https://nick-job.github.io/Real-time-fund-Revise/market](https://nick-job.github.io/Real-time-fund-Revise/market)
 
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FNick-Job%2FReal-time-fund-Revise)
 
 ## ✨ 特性
 
